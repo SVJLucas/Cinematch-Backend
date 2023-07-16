@@ -2,8 +2,8 @@ import os
 import firebase_admin
 from firebase_admin import db
 
+
 def connect_to_database():
-  
     """
     Function to connect to a Firebase real-time database.
 
@@ -13,7 +13,6 @@ def connect_to_database():
 
     Returns:
     db.Reference: A reference to the root of the Firebase database.
-    
     """
     # Get the path to Firebase credentials from environment variables
     path_to_certificate = os.getenv('PATH_TO_CREDENTIALS')
