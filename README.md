@@ -1,6 +1,7 @@
 # Cinematch-Backend
 
-## Concept map
+## Database's Design
+### Concept map
 
 A concept map in database design is a visual tool that depicts the relationships between different entities in a database. Using a concept map in the early stages of database design can help ensure that all necessary data is accounted for and that relationships between entities are correctly defined.
 
