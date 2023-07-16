@@ -1,5 +1,11 @@
 # Cinematch-Backend
 
+Welcome to the backend repository for Cinematch, a revolutionary movie recommendation platform! Cinematch is designed to connect users to movies they'll love but might not have discovered on their own.
+
+![Concept Map of the Database](https://drive.google.com/uc?export=view&id=1HMVuoUZDbcMkdD-63Wc0Efh114SGs0s_)
+
+
+
 ## Database's Design
 ### Concept map
 
@@ -13,6 +19,9 @@ In this case, we focused in the main aspects:
 
 * **Ratings**: This table could be a junction table that connects Users and Movies. It could include the User identifier, the Movie identifier, the Score that the user gave to the movie, and the Date/Time of the rating. The Score must be a number between 0 and 5.
 
-
-
 ![Concept Map of the Database](https://drive.google.com/uc?export=view&id=1kZqGk2CQhsAXFeNpW0xjd5AiFj1aiDhB)
+
+## Contact
+
+If you have any questions, suggestions, or issues, please feel free to reach out.
+Thank you for your interest in Cinematch. We can't wait to see the movie magic you'll create!
