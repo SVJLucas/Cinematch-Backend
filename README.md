@@ -1,10 +1,9 @@
 # Cinematch-Backend
 
-Welcome to the backend repository for Cinematch, a revolutionary movie recommendation platform! Cinematch is designed to connect users to movies they'll love but might not have discovered on their own.
 
 ![Concept Map of the Database](https://drive.google.com/uc?export=view&id=1HMVuoUZDbcMkdD-63Wc0Efh114SGs0s_)
 
-
+Welcome to the backend repository for Cinematch, a revolutionary movie recommendation platform! Cinematch is designed to connect users to movies they'll love but might not have discovered on their own.
 
 ## Database's Design
 ### Concept map
