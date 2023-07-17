@@ -10,16 +10,19 @@ class MovieGenre(BaseModel):
 
 
 class MovieGenrePost(BaseModel):
-    name: str
+    movie_id: str
+    genre_id: str
 
 
 class MovieGenreResponse(MovieGenre):
-    name: str
+    movie_id: str
+    genre_id: str
     created_at: datetime
 
 
-class MovieGenreUpdate(MovieGenre):
-    name: str
+class MovieGenreUpdate(BaseModel):
+    movie_id: str
+    genre_id: str
 
 
 class MovieGenreDelete(MovieGenre):

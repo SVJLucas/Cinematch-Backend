@@ -18,7 +18,7 @@ class GenreResponse(Genre):
     created_at: datetime
 
 
-class GenreUpdate(Genre):
+class GenreUpdate(BaseModel):
     name: str
 
 

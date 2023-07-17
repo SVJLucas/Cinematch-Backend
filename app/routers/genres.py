@@ -171,12 +171,13 @@ async def delete_genre(genre_id: str, db: Reference = Depends(get_database)) -> 
     return genre
 
 
-@router.put('/genres', status_code=status.HTTP_200_OK, response_model=GenreResponse)
-async def put_genre(genre: GenreUpdate, db: Reference = Depends(get_database)) -> GenreResponse:
+@router.put('/genres/{genre_id}', status_code=status.HTTP_200_OK, response_model=GenreResponse)
+async def put_genre(genre_id: str, genre: GenreUpdate, db: Reference = Depends(get_database)) -> GenreResponse:
     """
     Updates a genre in the database.
 
     Parameters:
+        genre_id (str): The ID of the genre to retrieve.
         genre (GenreUpdate): The genre data to be updated, parsed from the request body.
         db (Reference): A reference to the Firebase database, injected by FastAPI's dependency injection.
 
@@ -186,9 +187,6 @@ async def put_genre(genre: GenreUpdate, db: Reference = Depends(get_database)) -
 
     # Convert the GenreUpdate Pydantic model to a dict
     genre = genre.dict()
-
-    # Extract genre_id from the data and remove it from the dict
-    genre_id = genre.pop('genre_id')
 
     try:
         # Create a reference to the genre in the 'Genres' node in Firebase

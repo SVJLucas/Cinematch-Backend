@@ -171,12 +171,13 @@ async def delete_movie(movie_id: str, db: Reference = Depends(get_database)) -> 
     return movie
 
 
-@router.put('/movies', status_code=status.HTTP_200_OK, response_model=MovieResponse)
-async def put_movie(movie: MovieUpdate, db: Reference = Depends(get_database)) -> MovieResponse:
+@router.put('/movies/{movie_id}', status_code=status.HTTP_200_OK, response_model=MovieResponse)
+async def put_movie(movie_id:str, movie: MovieUpdate, db: Reference = Depends(get_database)) -> MovieResponse:
     """
     Updates a movie in the database.
 
     Parameters:
+        movie_id (str): The ID of the movie to retrieve.
         movie (MovieUpdate): The movie data to be updated, parsed from the request body.
         db (Reference): A reference to the Firebase database, injected by FastAPI's dependency injection.
 
@@ -186,9 +187,6 @@ async def put_movie(movie: MovieUpdate, db: Reference = Depends(get_database)) -
 
     # Convert the MovieUpdate Pydantic model to a dict
     movie = movie.dict()
-
-    # Extract movie_id from the data and remove it from the dict
-    movie_id = movie.pop('movie_id')
 
     try:
         # Create a reference to the movie in the 'Movies' node in Firebase

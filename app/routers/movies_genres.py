@@ -171,12 +171,13 @@ async def delete_movie_genre(movie_genre_id: str, db: Reference = Depends(get_da
     return movie_genre
 
 
-@router.put('/movies_genres', status_code=status.HTTP_200_OK, response_model=MovieGenreResponse)
-async def put_movie_genre(movie_genre: MovieGenreUpdate, db: Reference = Depends(get_database)) -> MovieGenreResponse:
+@router.put('/movies_genres/{movie_genre_id}', status_code=status.HTTP_200_OK, response_model=MovieGenreResponse)
+async def put_movie_genre(movie_genre_id: str, movie_genre: MovieGenreUpdate, db: Reference = Depends(get_database)) -> MovieGenreResponse:
     """
     Updates a movie_genre in the database.
 
     Parameters:
+        movie_genre_id (str): The ID of the movie_genre to retrieve.
         movie_genre (MovieGenreUpdate): The movie_genre data to be updated, parsed from the request body.
         db (Reference): A reference to the Firebase database, injected by FastAPI's dependency injection.
 
@@ -186,9 +187,6 @@ async def put_movie_genre(movie_genre: MovieGenreUpdate, db: Reference = Depends
 
     # Convert the MovieGenreUpdate Pydantic model to a dict
     movie_genre = movie_genre.dict()
-
-    # Extract movie_genre_id from the data and remove it from the dict
-    movie_genre_id = movie_genre.pop('movie_genre_id')
 
     try:
         # Create a reference to the movie_genre in the 'MovieGenres' node in Firebase

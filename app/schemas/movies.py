@@ -10,16 +10,28 @@ class Movie(BaseModel):
 
 
 class MoviePost(BaseModel):
-    name: str
+    title: str
+    synopsis: str
+    year: int
+    image_url: str
+    rating: float
 
 
 class MovieResponse(Movie):
-    name: str
+    title: str
+    synopsis: str
+    year: int
+    image_url: str
+    rating: float
     created_at: datetime
 
 
-class MovieUpdate(Movie):
-    name: str
+class MovieUpdate(BaseModel):
+    title: str
+    synopsis: str
+    year: int
+    image_url: str
+    rating: float
 
 
 class MovieDelete(Movie):
