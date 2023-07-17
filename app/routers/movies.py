@@ -6,6 +6,25 @@ from firebase_admin.exceptions import FirebaseError
 from fastapi import APIRouter, status, Depends, HTTPException
 from schemas.movies import Movie, MoviePost, MovieUpdate, MovieDelete, MovieResponse
 
+from utils.constants import *
+
+
+def movie_sanity_check(movie: MovieResponse):
+    min_year = MIN_YEAR
+    max_year = datetime.now().year
+    year = movie['year']
+    if year < min_year or year > max_year:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail=f"Year {year} is not within the allowed bounds [{min_year}, {max_year}]")
+
+    min_rating = MIN_RATING
+    max_rating = MAX_RATING
+    rating = movie['mean_rating']
+    if rating < min_rating or rating > max_rating:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail=f"Mean rating {rating} is not within the allowed bounds [{min_rating}, {max_rating}]")
+
+
 router = APIRouter()
 
 
@@ -99,6 +118,8 @@ async def post_movie(movie: MoviePost, db: Reference = Depends(get_database)):
     # Convert the movie data to a dict, ready for Firebase
     movie = movie.dict()
 
+    movie_sanity_check(movie)
+
     # Create the 'created_at' field with reference in UTC time
     movie['created_at'] = datetime.utcnow().isoformat()
 
@@ -187,6 +208,9 @@ async def put_movie(movie_id:str, movie: MovieUpdate, db: Reference = Depends(ge
 
     # Convert the MovieUpdate Pydantic model to a dict
     movie = movie.dict()
+
+    # Do the sanity check
+    movie_sanity_check(movie)
 
     try:
         # Create a reference to the movie in the 'Movies' node in Firebase
