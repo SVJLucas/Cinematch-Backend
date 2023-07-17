@@ -14,7 +14,7 @@ management = DatabaseManagement(table_name='MoviesGenres',
                                 class_name_id='movie_genre_id')
 
 
-def movie_genre_sanity_check(movie_genre: dict):
+def movie_genre_sanity_check(movie_genre: dict, db: Reference):
     movie_id = movie_genre['movie_id']
     genre_id = movie_genre['genre_id']
 
@@ -88,7 +88,7 @@ async def post_movie_genre(movie_genre: MovieGenrePost, db: Reference = Depends(
     movie_genre = movie_genre.dict()
 
     # Do the movie genre check
-    movie_genre_sanity_check(movie_genre)
+    movie_genre_sanity_check(movie_genre, db)
 
     # Get the data from the manager
     movie_genre = management.post(obj_data=movie_genre,
@@ -140,7 +140,7 @@ async def put_movie_genre(movie_genre_id: str, movie_genre: MovieGenreUpdate,
     movie_genre = movie_genre.dict()
 
     # Do the movie genre check
-    movie_genre_sanity_check(movie_genre)
+    movie_genre_sanity_check(movie_genre, db)
 
     # Delete the data from the manager and return it
     updated_movie_genre = management.update(id=movie_genre_id,
