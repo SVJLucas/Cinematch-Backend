@@ -1,6 +1,7 @@
-from typing import List
+from typing import List, Any
 from datetime import datetime
 from firebase_admin.db import Reference
+from firebase_admin.exceptions import InvalidArgumentError
 from firebase_admin.exceptions import FirebaseError
 from fastapi import status, HTTPException
 
@@ -10,6 +11,57 @@ class DatabaseManagement:
     def __init__(self, table_name: str, class_name_id: str):
         self.table_name = table_name
         self.class_name_id = class_name_id
+
+    def get_by_field(self, field: str, value: Any, db: Reference) -> List[dict]:
+
+        """
+
+        Retrieves all records from a specified table in the Firebase Realtime Database where a specified field matches a specified value.
+
+        This function accepts `field` and `value` parameters to filter the data. It fetches all data from the table specified by
+        `self.table_name` and checks each record. If the specified field in a record matches the specified value, the record is added to the
+        results list.
+
+        If a FirebaseError is encountered during the process, an HTTPException with a status code of 500 (Internal Server Error) is raised.
+
+        Args:
+            field (str): The field used to filter the records.
+            value (str): The value used to filter the records.
+            db (db.Reference): The Firebase database reference used for data retrieval.
+
+        Returns:
+            List[dict]: A list of dictionaries representing the records matching the field-value criteria.
+
+        Raises:
+            HTTPException:
+                - If any error occurs during the interaction with Firebase, an HTTPException is raised with a status
+                code of 500 (Internal Server Error), along with a detailed error message.
+
+        """
+        try:
+            # Get all objects from Firebase that have the specified field equal to the specified value
+            objects = db.child(self.table_name).order_by_child(field).equal_to(value).get()
+
+
+        except InvalidArgumentError:
+            # If an InvalidArgumentError occurred, raise a 500 status code with a user-friendly message
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                                detail=f"Firebase requires an index on '{field}'. "
+                                       f"Please add '.indexOn': '{field}' under '{self.table_name}' in your Firebase Database Rules.")
+
+
+        except Exception as error:
+            # If an error occurred while interacting with Firebase, raise a 500 status code with a helpful message
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                                detail=f"An error occurred while trying to fetch data: {error}")
+
+        objects_data = []
+        for key, obj in objects.items():
+            # Create a dictionary for the object data and add the id
+            obj_data = {self.class_name_id: key, **obj}
+            objects_data.append(obj_data)
+
+        return objects_data
 
     def verify_id(self, id:str, db: Reference)->bool:
 
