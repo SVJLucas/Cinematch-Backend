@@ -7,6 +7,8 @@ from firebase_admin.exceptions import FirebaseError
 from fastapi import APIRouter, status, Depends, HTTPException
 from schemas.genres import Genre, GenrePost, GenreUpdate, GenreDelete, GenreResponse
 
+# todo: genres sanity check (ex: unique)
+
 router = APIRouter()
 management = DatabaseManagement(table_name='Genres',
                                 class_name_id='genre_id')
@@ -73,7 +75,7 @@ async def post_genre(genre: GenrePost, db: Reference = Depends(get_database)):
         genre (GenrePost): The created genre data, retrieved from the database.
 
     """
-    # Converting the data to a dictionary
+    # Converting the data to a dict, ready for Firebase
     genre = genre.dict()
 
     # Get the data from the manager
@@ -86,7 +88,6 @@ async def post_genre(genre: GenrePost, db: Reference = Depends(get_database)):
 
 @router.delete('/genres/{genre_id}', response_model=GenreResponse, status_code=status.HTTP_200_OK)
 async def delete_genre(genre_id: str, db: Reference = Depends(get_database)) -> GenreResponse:
-
     """
 
     Deletes the genre from database given it's ID
@@ -99,7 +100,6 @@ async def delete_genre(genre_id: str, db: Reference = Depends(get_database)) -> 
         genre (GenreResponse): The genre data, deleted from the database and modeled as a GenreResponse object.
 
     """
-
     # Delete the data from the manager and return it
     genre = management.delete(id=genre_id,
                               db=db)
@@ -123,7 +123,6 @@ async def put_genre(genre_id: str, genre: GenreUpdate, db: Reference = Depends(g
     Returns:
         genre (GenreResponse): The updated genre data, retrieved from the database.
     """
-
     # Convert the GenreUpdate Pydantic model to a dict
     genre = genre.dict()
 
@@ -134,4 +133,3 @@ async def put_genre(genre_id: str, genre: GenreUpdate, db: Reference = Depends(g
 
     # Convert the dict to a GenreResponse Pydantic model and return it
     return GenreResponse(**updated_genre)
-
