@@ -8,7 +8,7 @@ from fastapi import APIRouter, status, Depends, HTTPException
 
 # noinspection PyTypeChecker,PyUnresolvedReferences
 class DatabaseManagement:
-    def __init__(self, table_name: str, class_name_id: str,):
+    def __init__(self, table_name: str, class_name_id: str):
         self.table_name = table_name
         self.class_name_id = class_name_id
 
@@ -64,6 +64,10 @@ class DatabaseManagement:
         return objects_data
 
     def post(self, obj_data: dict, db: Reference) -> dict:
+
+        # Create the 'created_at' field with reference in UTC time
+        obj_data['created_at'] = datetime.utcnow().isoformat()
+
         try:
             # Create a new reference in the table, with a unique key
             reference = db.child(self.table_name).push()
@@ -85,6 +89,30 @@ class DatabaseManagement:
             # If an error occurred while interacting with Firebase, return a 500 status code with a helpful message
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                                 detail=f"An error occurred while trying to push data: {error}")
+
+    def delete(self, id: str, db: Reference) -> dict:
+        try:
+            # Construct a reference to the specific object in Firebase
+            reference = db.child(self.table_name).child(id)
+
+            # Use the reference to get the object data
+            obj_data = reference.get()
+
+            if obj_data is not None:
+                # Deleting the desired data
+                reference.delete()
+                # If the object data is not None, we add the id to the dictionary
+                obj_data[self.class_name_id] = id
+            else:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                    detail=f"{self.class_name_id} == {id} was not found.")
+
+            return obj_data
+
+        except FirebaseError as error:
+            # If an error occurred while interacting with Firebase, raise a 500 status code with a helpful message
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                                detail=f"An error occurred while trying to fetch data: {error}")
 
     def update(self, id: str, obj_data: dict, db: Reference) -> dict:
         try:
@@ -118,27 +146,3 @@ class DatabaseManagement:
             # If an error occurred while interacting with Firebase, raise a 500 Internal Server Error
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                                 detail=f"An error occurred while trying to update the object: {error}")
-
-    def delete(self, id: str, db: Reference) -> dict:
-        try:
-            # Construct a reference to the specific object in Firebase
-            reference = db.child(self.table_name).child(id)
-
-            # Use the reference to get the object data
-            obj_data = reference.get()
-
-            if obj_data is not None:
-                # Deleting the desired data
-                reference.delete()
-                # If the object data is not None, we add the id to the dictionary
-                obj_data[self.class_name_id] = id
-            else:
-                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                                    detail=f"{self.class_name_id} == {id} was not found.")
-
-            return obj_data
-
-        except FirebaseError as error:
-            # If an error occurred while interacting with Firebase, raise a 500 status code with a helpful message
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                                detail=f"An error occurred while trying to fetch data: {error}")
