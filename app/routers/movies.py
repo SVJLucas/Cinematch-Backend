@@ -3,6 +3,7 @@ from utils.constants import *
 from datetime import datetime
 from firebase_admin.db import Reference
 from database.database import get_database
+from database.management import DatabaseManagement
 from fastapi import APIRouter, status, Depends, HTTPException
 from schemas.movies import Movie, MoviePost, MovieUpdate, MovieDelete, MovieResponse
 
@@ -10,6 +11,7 @@ from schemas.movies import Movie, MoviePost, MovieUpdate, MovieDelete, MovieResp
 router = APIRouter()
 management = DatabaseManagement(table_name='Movies',
                                 class_name_id='movie_id')
+
 
 def movie_sanity_check(movie: dict):
     min_year = MIN_YEAR
@@ -94,6 +96,9 @@ async def post_movie(movie: MoviePost, db: Reference = Depends(get_database)):
     # Convert the movie data to a dict, ready for Firebase
     movie = movie.dict()
 
+    # Do the movie sanity check
+    movie_sanity_check(movie)
+
     # Get the data from the manager
     movie = management.post(obj_data=movie,
                             db=db)
@@ -146,6 +151,9 @@ async def put_movie(movie_id:str, movie: MovieUpdate, db: Reference = Depends(ge
 
     # Convert the MovieUpdate Pydantic model to a dict
     movie = movie.dict()
+
+    # Do the movie sanity check
+    movie_sanity_check(movie)
 
     # Delete the data from the manager and return it
     updated_movie = management.update(id=movie_id,

@@ -1,17 +1,26 @@
 from typing import List
-from datetime import datetime
 from firebase_admin.db import Reference
 from database.database import get_database
 from database.management import DatabaseManagement
-from firebase_admin.exceptions import FirebaseError
 from fastapi import APIRouter, status, Depends, HTTPException
+from routers import movies, genres
 from schemas.movies_genres import MovieGenre, MovieGenrePost, MovieGenreUpdate, MovieGenreDelete, MovieGenreResponse
+
 
 from utils.constants import *
 
 router = APIRouter()
 management = DatabaseManagement(table_name='MoviesGenres',
                                 class_name_id='movie_genre_id')
+
+
+def movie_genre_sanity_check(movie_genre: dict):
+    movie_id = movie_genre['movie_id']
+    genre_id = movie_genre['genre_id']
+
+    if not (movies.management.verify_id(movie_id, db) and genres.management.verify_id(genre_id, db)):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"movie_id == {movie_id} or genre_id == {genre_id} was not found.")
 
 
 @router.get('/moviesgenres/{movie_genre_id}', response_model=MovieGenreResponse, status_code=status.HTTP_200_OK)
@@ -78,6 +87,9 @@ async def post_movie_genre(movie_genre: MovieGenrePost, db: Reference = Depends(
     # Convert the movie_genre data to a dict, ready for Firebase
     movie_genre = movie_genre.dict()
 
+    # Do the movie genre check
+    movie_genre_sanity_check(movie_genre)
+
     # Get the data from the manager
     movie_genre = management.post(obj_data=movie_genre,
                                   db=db)
@@ -126,6 +138,9 @@ async def put_movie_genre(movie_genre_id: str, movie_genre: MovieGenreUpdate,
     """
     # Convert the GenreUpdate Pydantic model to a dict
     movie_genre = movie_genre.dict()
+
+    # Do the movie genre check
+    movie_genre_sanity_check(movie_genre)
 
     # Delete the data from the manager and return it
     updated_movie_genre = management.update(id=movie_genre_id,

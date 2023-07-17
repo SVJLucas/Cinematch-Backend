@@ -43,7 +43,7 @@ class DatabaseManagement:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                                 detail=f"An error occurred while trying to fetch data: {error}")
 
-        return obj is None
+        return obj is not None
 
     def get_by_id(self, id: str, db: Reference) -> dict:
 
