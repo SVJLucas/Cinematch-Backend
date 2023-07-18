@@ -14,17 +14,47 @@ management = DatabaseManagement(table_name='Movies',
 
 
 def movie_sanity_check(movie: dict):
+
+    """
+
+    Check if the movie details, specifically the year and rating, fall within valid ranges.
+
+    Parameters:
+    movie (dict): A dictionary containing details of a movie.
+
+    Raises:
+    HTTPException: If the movie year is not within the range MIN_YEAR to current year,
+    or if the movie rating is not within the range MIN_RATING to MAX_RATING.
+
+    """
+
+    # The minimum year of movie release allowed
     min_year = MIN_YEAR
+
+    # The maximum year of movie release allowed is set as the current year
     max_year = datetime.now().year
+
+    # Extracting the year of the movie from the dictionary
     year = movie['year']
+
+    # Checking if the year is within the defined range
     if year < min_year or year > max_year:
+        # Raise an exception with status 400 if year is out of bounds
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail=f"Year {year} is not within the allowed bounds [{min_year}, {max_year}]")
 
+    # The minimum movie rating allowed
     min_rating = MIN_RATING
+
+    # The maximum movie rating allowed
     max_rating = MAX_RATING
-    rating = movie['mean_rating']
+
+    # Extracting the rating of the movie from the dictionary
+    rating = movie['rating']
+
+    # Checking if the rating is within the defined range
     if not min_rating <= rating <= max_rating:
+        # Raise an exception with status 400 if rating is out of bounds
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail=f"Mean rating {rating} is not within the allowed bounds [{min_rating}, {max_rating}]")
 
