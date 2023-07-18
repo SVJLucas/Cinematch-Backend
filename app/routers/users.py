@@ -1,5 +1,5 @@
 from typing import List
-from datetime import datetime
+from utils.hashing import Hashing
 from firebase_admin.db import Reference
 from database.database import get_database
 from database.management import DatabaseManagement
@@ -7,6 +7,9 @@ from fastapi import APIRouter, status, Depends, HTTPException
 from schemas.users import User, UserPost, UserUpdate, UserDelete, UserResponse
 
 router = APIRouter()
+
+hashing = Hashing()
+
 management = DatabaseManagement(table_name='Users',
                                 class_name_id='user_id')
 
@@ -63,7 +66,9 @@ async def get_users(db: Reference = Depends(get_database)):
 
 @router.post('/users', status_code=status.HTTP_201_CREATED, response_model=UserResponse)
 async def post_user(user: UserPost, db: Reference = Depends(get_database)):
+
     """
+
     Create a new user in the database.
 
     Parameters:
@@ -72,12 +77,16 @@ async def post_user(user: UserPost, db: Reference = Depends(get_database)):
 
     Returns:
         user (UserResponse): The created user data, retrieved from the database.
+
     """
     # Convert the user data to a dict, ready for Firebase
     user_data = user.dict()
 
     # Perform sanity checks for the user data
     user_sanity_check(user_data, db)
+
+    # Hashing password before it enter the database
+    user_data['password'] = hashing.hash_password(user_data['password'])
 
     # Get the data from the manager
     user_data = management.post(obj_data=user_data, db=db)

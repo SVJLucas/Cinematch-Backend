@@ -1,5 +1,5 @@
 from typing import List
-from datetime import datetime
+from utils.hashing import Hashing
 from firebase_admin.db import Reference
 from database.database import get_database
 from database.management import DatabaseManagement
@@ -7,6 +7,9 @@ from fastapi import APIRouter, status, Depends, HTTPException
 from schemas.admins import Admin, AdminPost, AdminUpdate, AdminDelete, AdminResponse
 
 router = APIRouter()
+
+hashing = Hashing()
+
 management = DatabaseManagement(table_name='Admins',
                                 class_name_id='admin_id')
 
@@ -56,7 +59,9 @@ async def get_admins(db: Reference = Depends(get_database)):
 
 @router.post('/admins', status_code=status.HTTP_201_CREATED, response_model=AdminResponse)
 async def post_admin(admin: AdminPost, db: Reference = Depends(get_database)):
+
     """
+
     Create a new admin in the database.
 
     Parameters:
@@ -65,9 +70,14 @@ async def post_admin(admin: AdminPost, db: Reference = Depends(get_database)):
 
     Returns:
         admin (AdminResponse): The created admin data, retrieved from the database.
+
     """
+
     # Convert the admin data to a dict, ready for Firebase
     admin_data = admin.dict()
+
+    # Hashing password before it enter the database
+    admin_data['password'] = hashing.hash_password(admin_data['password'])
 
     # Get the data from the manager
     admin_data = management.post(obj_data=admin_data, db=db)

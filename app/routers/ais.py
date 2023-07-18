@@ -1,5 +1,5 @@
 from typing import List
-from datetime import datetime
+from utils.hashing import Hashing
 from firebase_admin.db import Reference
 from database.database import get_database
 from database.management import DatabaseManagement
@@ -7,6 +7,9 @@ from fastapi import APIRouter, status, Depends, HTTPException
 from schemas.ais import Ai, AiPost, AiUpdate, AiDelete, AiResponse
 
 router = APIRouter()
+
+hashing = Hashing()
+
 management = DatabaseManagement(table_name='Ais',
                                 class_name_id='ai_id')
 
@@ -65,9 +68,13 @@ async def post_ai(ai: AiPost, db: Reference = Depends(get_database)):
 
     Returns:
         ai (AiResponse): The created ai data, retrieved from the database.
+
     """
     # Convert the ai data to a dict, ready for Firebase
     ai_data = ai.dict()
+
+    # Hashing password before it enter the database
+    ai_data['password'] = hashing.hash_password(ai_data['password'])
 
     # Get the data from the manager
     ai_data = management.post(obj_data=ai_data, db=db)
