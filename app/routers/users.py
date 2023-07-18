@@ -128,9 +128,6 @@ async def put_user(user_id: str, user: UserUpdate, db: Reference = Depends(get_d
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail="User not found.")
 
-    # Check if the user already exists by email (except the current user)
-    email = user_data.get('email')
-
     # Perform sanity checks for the user data
     user_sanity_check(user_data, db)
 

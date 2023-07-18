@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routers import users, genres, movies, movies_genres, recommendations, ratings
+from routers import users, admin, ai, genres, movies, movies_genres, recommendations, ratings
 from database.database import connect_to_database
 from dotenv import load_dotenv
 
@@ -15,6 +15,10 @@ connect_to_database()
 # Include routers, assigning tags to categorize the routes in the API docs
 # The user-related routes
 app.include_router(users.router,tags=['Users'])
+# The admin-related routes
+app.include_router(admin.router,tags=['Admins'])
+# The ai-related routes
+app.include_router(ai.router,tags=['Ais'])
 # The genre-related routes
 app.include_router(genres.router,tags=['Genres'])
 # The movie-related routes
