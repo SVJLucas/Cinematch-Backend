@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routers import users, admin, ai, genres, movies, movies_genres, recommendations, ratings
+from routers import users, admins, ais, genres, movies, movies_genres, recommendations, ratings
 from database.database import connect_to_database
 from dotenv import load_dotenv
 
