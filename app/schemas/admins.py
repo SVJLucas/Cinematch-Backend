@@ -16,7 +16,6 @@ class AdminPost(BaseModel):
 
 class AdminResponse(Admin):
     name: str
-    password: str
     created_at: datetime
 
 

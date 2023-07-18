@@ -1,5 +1,5 @@
 from datetime import datetime
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 
 class User(BaseModel):
@@ -11,20 +11,19 @@ class User(BaseModel):
 
 class UserPost(BaseModel):
     name: str
-    email: str
+    email: EmailStr
     password: str
 
 
 class UserResponse(User):
     name: str
-    email: str
-    password: str
+    email: EmailStr
     created_at: datetime
 
 
 class UserUpdate(BaseModel):
     name: str
-    email: str
+    email: EmailStr
     password: str
 
 

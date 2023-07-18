@@ -16,7 +16,6 @@ class AiPost(BaseModel):
 
 class AiResponse(Ai):
     name: str
-    password: str
     created_at: datetime
 
 
