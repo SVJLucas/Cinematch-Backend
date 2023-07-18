@@ -16,9 +16,9 @@ connect_to_database()
 # The user-related routes
 app.include_router(users.router,tags=['Users'])
 # The admin-related routes
-app.include_router(admin.router,tags=['Admins'])
+app.include_router(admins.router,tags=['Admins'])
 # The ai-related routes
-app.include_router(ai.router,tags=['Ais'])
+app.include_router(ais.router,tags=['Ais'])
 # The genre-related routes
 app.include_router(genres.router,tags=['Genres'])
 # The movie-related routes
