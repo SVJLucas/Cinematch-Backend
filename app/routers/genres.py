@@ -81,17 +81,16 @@ async def post_genre(genre: GenrePost, db: Reference = Depends(get_database)):
 
     value = genre['name']
 
-
-    if not management.get_by_field(field='name',value=value,db=db):
-
-        # Get the data from the manager
-        genre = management.post(obj_data=genre,
-                                db=db)
-        # Return the created genre data, along with a 201 status code
-        return GenreResponse(**genre)
-    else:
+    # Check if the genre already exists
+    if management.get_by_field(field='name', value=value, db=db):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail=f'The field == name must be unique.')
+                            detail='Genre already registered.')
+
+    # Get the data from the manager
+    genre = management.post(obj_data=genre,
+                            db=db)
+    # Return the created genre data, along with a 201 status code
+    return GenreResponse(**genre)
 
 
 @router.delete('/genres/{genre_id}', response_model=GenreResponse, status_code=status.HTTP_200_OK)

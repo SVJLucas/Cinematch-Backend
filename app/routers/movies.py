@@ -24,9 +24,10 @@ def movie_sanity_check(movie: dict):
     min_rating = MIN_RATING
     max_rating = MAX_RATING
     rating = movie['mean_rating']
-    if rating < min_rating or rating > max_rating:
+    if not min_rating <= rating <= max_rating:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail=f"Mean rating {rating} is not within the allowed bounds [{min_rating}, {max_rating}]")
+
 
 @router.get('/movies/{movie_id}', response_model=MovieResponse, status_code=status.HTTP_200_OK)
 async def get_movie(movie_id: str, db: Reference = Depends(get_database)) -> MovieResponse:

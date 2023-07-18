@@ -18,9 +18,11 @@ def movie_genre_sanity_check(movie_genre: dict, db: Reference):
     movie_id = movie_genre['movie_id']
     genre_id = movie_genre['genre_id']
 
-    if not (movies.management.verify_id(movie_id, db) and genres.management.verify_id(genre_id, db)):
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"movie_id == {movie_id} or genre_id == {genre_id} was not found.")
+    if not movies.management.verify_id(id=movie_id, db=db):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Movie not found.")
+
+    if not genres.management.verify_id(id=genre_id, db=db):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Genre not found.")
 
 
 @router.get('/moviesgenres/{movie_genre_id}', response_model=MovieGenreResponse, status_code=status.HTTP_200_OK)
