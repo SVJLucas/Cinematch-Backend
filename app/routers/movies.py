@@ -1,3 +1,4 @@
+from routers import auth
 from typing import List
 from utils.constants import *
 from datetime import datetime
@@ -110,7 +111,7 @@ async def get_movies(db: Reference = Depends(get_database)):
 
 
 @router.post('/movies', status_code=status.HTTP_201_CREATED, response_model=MovieResponse)
-async def post_movie(movie: MoviePost, db: Reference = Depends(get_database)):
+async def post_movie(movie: MoviePost, db: Reference = Depends(get_database), current_admin_id: str = Depends(auth.get_current_admin)):
 
     """
     Create a new movie in the database.
@@ -139,7 +140,7 @@ async def post_movie(movie: MoviePost, db: Reference = Depends(get_database)):
 
 
 @router.delete('/movies/{movie_id}', response_model=MovieResponse, status_code=status.HTTP_200_OK)
-async def delete_movie(movie_id: str, db: Reference = Depends(get_database)) -> MovieResponse:
+async def delete_movie(movie_id: str, db: Reference = Depends(get_database),current_admin_id: str = Depends(auth.get_current_admin)) -> MovieResponse:
 
     """
 
@@ -165,7 +166,7 @@ async def delete_movie(movie_id: str, db: Reference = Depends(get_database)) -> 
 
 
 @router.put('/movies/{movie_id}', status_code=status.HTTP_200_OK, response_model=MovieResponse)
-async def put_movie(movie_id:str, movie: MovieUpdate, db: Reference = Depends(get_database)) -> MovieResponse:
+async def put_movie(movie_id:str, movie: MovieUpdate, db: Reference = Depends(get_database),current_admin_id: str = Depends(auth.get_current_admin)) -> MovieResponse:
 
     """
 

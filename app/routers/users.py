@@ -136,8 +136,6 @@ async def put_user(user: UserUpdate, db: Reference = Depends(get_database),
     # Convert the UserUpdate Pydantic model to a dict
     user_data = user.dict()
 
-    print(current_user_id)
-
     # Check if the user exists by ID
     if not management.get_by_id(id=current_user_id, db=db):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,

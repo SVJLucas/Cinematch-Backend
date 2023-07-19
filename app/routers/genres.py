@@ -63,7 +63,8 @@ async def get_genres(db: Reference = Depends(get_database)):
 
 
 @router.post('/genres', status_code=status.HTTP_201_CREATED, response_model=GenreResponse)
-async def post_genre(genre: GenrePost, db: Reference = Depends(get_database)):
+async def post_genre(genre: GenrePost, db: Reference = Depends(get_database),
+                     current_admin_id: str = Depends(auth.get_current_admin)):
     """
     Create a new genre in the database.
 
@@ -94,7 +95,8 @@ async def post_genre(genre: GenrePost, db: Reference = Depends(get_database)):
 
 
 @router.delete('/genres/{genre_id}', response_model=GenreResponse, status_code=status.HTTP_200_OK)
-async def delete_genre(genre_id: str, db: Reference = Depends(get_database)) -> GenreResponse:
+async def delete_genre(genre_id: str, db: Reference = Depends(get_database),
+                       current_admin_id: str = Depends(auth.get_current_admin)) -> GenreResponse:
     """
 
     Deletes the genre from database given it's ID
@@ -118,7 +120,8 @@ async def delete_genre(genre_id: str, db: Reference = Depends(get_database)) -> 
 
 
 @router.put('/genres/{genre_id}', status_code=status.HTTP_200_OK, response_model=GenreResponse)
-async def put_genre(genre_id: str, genre: GenreUpdate, db: Reference = Depends(get_database)) -> GenreResponse:
+async def put_genre(genre_id: str, genre: GenreUpdate, db: Reference = Depends(get_database),
+                    current_admin_id: str = Depends(auth.get_current_admin)) -> GenreResponse:
     """
     Updates a genre in the database.
 

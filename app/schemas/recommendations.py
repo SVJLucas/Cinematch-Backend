@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import List
 from pydantic import BaseModel
 
 
@@ -27,3 +28,7 @@ class RecommendationUpdate(BaseModel):
 
 class RecommendationDelete(Recommendation):
     pass
+
+
+class RecommendationByGenre(BaseModel):
+    genres: List[str]

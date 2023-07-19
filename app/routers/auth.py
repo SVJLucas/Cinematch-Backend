@@ -32,7 +32,7 @@ oauth2_user_schema = OAuth2PasswordBearer(tokenUrl=login_users_url)
 # Defining the schema for OAuth2 password bearer with login admins URL.
 
 login_admins_url = '/login/admins'
-admin_authenticator = TokenManagement(os.getenv('SECRET_KEY_ADMIN'))
+admin_authenticator = TokenManagement(os.getenv('SECRET_KEY_ADMINS'))
 oauth2_admin_schema = OAuth2PasswordBearer(tokenUrl=login_admins_url)
 
 # Defining URL for AI login. Then, creating an instance of
@@ -40,7 +40,7 @@ oauth2_admin_schema = OAuth2PasswordBearer(tokenUrl=login_admins_url)
 # Defining the schema for OAuth2 password bearer with login AI URL.
 
 login_ais_url = '/login/ais'
-ai_authenticator = TokenManagement(os.getenv('SECRET_KEY_AI'))
+ai_authenticator = TokenManagement(os.getenv('SECRET_KEY_AIS'))
 oauth2_ais_schema = OAuth2PasswordBearer(tokenUrl=login_ais_url)
 
 

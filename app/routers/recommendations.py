@@ -26,7 +26,7 @@ def recommendation_sanity_check(rec_data: dict, db: Reference):
 
 
 @router.get('/recommendations/{recommendation_id}', response_model=RecommendationResponse, status_code=status.HTTP_200_OK)
-async def get_recommendation(recommendation_id: str, db: Reference = Depends(get_database)) -> RecommendationResponse:
+async def get_recommendation(recommendation_id: str, db: Reference = Depends(get_database),) -> RecommendationResponse:
     """
         Retrieve a specific recommendation from the database by its ID.
 
