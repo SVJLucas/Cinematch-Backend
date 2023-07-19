@@ -17,7 +17,6 @@ class UserPost(BaseModel):
 
 class UserResponse(User):
     name: str
-    email: EmailStr
     created_at: datetime
 
 
@@ -29,3 +28,8 @@ class UserUpdate(BaseModel):
 
 class UserDelete(User):
     pass
+
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str

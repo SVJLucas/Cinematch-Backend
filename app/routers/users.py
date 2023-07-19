@@ -1,4 +1,5 @@
 from typing import List
+from routers import auth
 from utils.hashing import Hashing
 from firebase_admin.db import Reference
 from database.database import get_database
@@ -44,6 +45,7 @@ async def get_user(user_id: str, db: Reference = Depends(get_database)) -> UserR
 
 @router.get('/users', response_model=List[UserResponse], status_code=status.HTTP_200_OK)
 async def get_users(db: Reference = Depends(get_database)):
+
     """
     Retrieve all users from the database.
 
@@ -95,20 +97,21 @@ async def post_user(user: UserPost, db: Reference = Depends(get_database)):
     return UserResponse(**user_data)
 
 
-@router.delete('/users/{user_id}', response_model=UserResponse, status_code=status.HTTP_200_OK)
-async def delete_user(user_id: str, db: Reference = Depends(get_database)) -> UserResponse:
+@router.delete('/users', response_model=UserResponse, status_code=status.HTTP_200_OK)
+async def delete_user(db: Reference = Depends(get_database),
+                      current_user_id: str = Depends(auth.get_current_user)) -> UserResponse:
     """
     Deletes the user from the database given their ID.
 
     Parameters:
-        user_id (str): The ID of the user to retrieve.
         db (Reference): A reference to the Firebase database, injected by FastAPI's dependency injection.
+        current_user_id (str): The ID of the user to retrieve.
 
     Returns:
         user (UserResponse): The user data, deleted from the database and modeled as a UserResponse object.
     """
     # Delete the data from the manager and return it
-    user_data = management.delete(id=user_id, db=db)
+    user_data = management.delete(id=current_user_id, db=db)
 
     # Convert the dictionary to a UserResponse object
     user_data = UserResponse(**user_data)
@@ -116,15 +119,16 @@ async def delete_user(user_id: str, db: Reference = Depends(get_database)) -> Us
     return user_data
 
 
-@router.put('/users/{user_id}', status_code=status.HTTP_200_OK, response_model=UserResponse)
-async def put_user(user_id: str, user: UserUpdate, db: Reference = Depends(get_database)) -> UserResponse:
+@router.put('/users', status_code=status.HTTP_200_OK, response_model=UserResponse)
+async def put_user(user: UserUpdate, db: Reference = Depends(get_database),
+                   current_user_id: str = Depends(auth.get_current_user)) -> UserResponse:
     """
     Updates a user in the database.
 
-    Parameters:
-        user_id (str): The ID of the user to retrieve.
+    Parameters:.
         user (UserUpdate): The user data to be updated, parsed from the request body.
         db (Reference): A reference to the Firebase database, injected by FastAPI's dependency injection.
+        current_user_id (str): The ID of the user to retrieve
 
     Returns:
         user (UserResponse): The updated user data, retrieved from the database.
@@ -132,8 +136,10 @@ async def put_user(user_id: str, user: UserUpdate, db: Reference = Depends(get_d
     # Convert the UserUpdate Pydantic model to a dict
     user_data = user.dict()
 
+    print(current_user_id)
+
     # Check if the user exists by ID
-    if not management.get_by_id(id=user_id, db=db):
+    if not management.get_by_id(id=current_user_id, db=db):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail="User not found.")
 
@@ -141,7 +147,10 @@ async def put_user(user_id: str, user: UserUpdate, db: Reference = Depends(get_d
     user_sanity_check(user_data, db)
 
     # Update the user data in the manager and return the updated data
-    updated_user_data = management.update(id=user_id, obj_data=user_data, db=db)
+    updated_user_data = management.update(id=current_user_id, obj_data=user_data, db=db)
 
     # Convert the dict to a UserResponse Pydantic model and return it
     return UserResponse(**updated_user_data)
+
+
+

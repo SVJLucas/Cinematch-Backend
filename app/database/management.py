@@ -63,7 +63,7 @@ class DatabaseManagement:
 
         return objects_data
 
-    def verify_id(self, id:str, db: Reference)->bool:
+    def verify_id(self, id:str, db: Reference) -> bool:
 
         """
 

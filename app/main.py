@@ -1,7 +1,7 @@
 from fastapi import FastAPI
-from routers import users, admins, ais, genres, movies, movies_genres, recommendations, ratings
-from database.database import connect_to_database
 from dotenv import load_dotenv
+from database.database import connect_to_database
+from routers import users, admins, ais, genres, movies, movies_genres, recommendations, ratings, auth
 
 # Load environment variables from a .env file
 load_dotenv()
@@ -29,3 +29,5 @@ app.include_router(movies_genres.router,tags=['Movies and Genres Relations'])
 app.include_router(ratings.router,tags=['Ratings'])
 # The routes related to movie recommendations given to users
 app.include_router(recommendations.router,tags=['Recommendations'])
+# The routes related to login of users, admins and ais
+app.include_router(auth.router,tags=['Login'])

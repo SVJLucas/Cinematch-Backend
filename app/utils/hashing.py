@@ -56,8 +56,5 @@ class Hashing:
         bool: True if the potential password is verified, False otherwise.
         """
 
-        # Hashes the possible plaintext password
-        possible_password_hashed = self.hash_password(possible_password)
-
         # Verifies if the hashed potential password matches the stored hashed password
-        return self.context.verify(possible_password_hashed, db_hashed_password)
+        return self.context.verify(possible_password, db_hashed_password)
