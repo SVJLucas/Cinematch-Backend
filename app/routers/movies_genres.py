@@ -1,27 +1,28 @@
 from typing import List
 from firebase_admin.db import Reference
 from database.database import get_database
-from database.management import DatabaseManagement
+from database.management_factory import database_management
 from fastapi import APIRouter, status, Depends, HTTPException
-from routers import movies, genres
 from schemas.movies_genres import MovieGenre, MovieGenrePost, MovieGenreUpdate, MovieGenreDelete, MovieGenreResponse
 
 
 from utils.constants import *
 
 router = APIRouter()
-management = DatabaseManagement(table_name='MoviesGenres',
-                                class_name_id='movie_genre_id')
+management = database_management['movies_genres']
 
 
 def movie_genre_sanity_check(movie_genre: dict, db: Reference):
+    movies = database_management['movies']
+    genres = database_management['genres']
+
     movie_id = movie_genre['movie_id']
     genre_id = movie_genre['genre_id']
 
-    if not movies.management.verify_id(id=movie_id, db=db):
+    if not movies.verify_id(id=movie_id, db=db):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Movie not found.")
 
-    if not genres.management.verify_id(id=genre_id, db=db):
+    if not genres.verify_id(id=genre_id, db=db):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Genre not found.")
 
 

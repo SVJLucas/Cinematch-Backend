@@ -4,14 +4,13 @@ from utils.constants import *
 from datetime import datetime
 from firebase_admin.db import Reference
 from database.database import get_database
-from database.management import DatabaseManagement
+from database.management_factory import database_management
 from fastapi import APIRouter, status, Depends, HTTPException
 from schemas.movies import Movie, MoviePost, MovieUpdate, MovieDelete, MovieResponse
 
 
 router = APIRouter()
-management = DatabaseManagement(table_name='Movies',
-                                class_name_id='movie_id')
+management = database_management['movies']
 
 
 def movie_sanity_check(movie: dict):

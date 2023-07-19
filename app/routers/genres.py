@@ -1,8 +1,9 @@
 from typing import List
+from routers import auth
 from datetime import datetime
 from firebase_admin.db import Reference
 from database.database import get_database
-from database.management import DatabaseManagement
+from database.management_factory import database_management
 from firebase_admin.exceptions import FirebaseError
 from fastapi import APIRouter, status, Depends, HTTPException
 from schemas.genres import Genre, GenrePost, GenreUpdate, GenreDelete, GenreResponse
@@ -10,8 +11,7 @@ from schemas.genres import Genre, GenrePost, GenreUpdate, GenreDelete, GenreResp
 # todo: genres sanity check (ex: unique)
 
 router = APIRouter()
-management = DatabaseManagement(table_name='Genres',
-                                class_name_id='genre_id')
+management = database_management['genres']
 
 
 @router.get('/genres/{genre_id}', response_model=GenreResponse, status_code=status.HTTP_200_OK)

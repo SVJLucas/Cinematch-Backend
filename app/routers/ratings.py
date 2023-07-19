@@ -3,25 +3,26 @@ from utils.constants import *
 from datetime import datetime
 from firebase_admin.db import Reference
 from database.database import get_database
-from database.management import DatabaseManagement
+from database.management_factory import database_management
 from fastapi import APIRouter, status, Depends, HTTPException
-from routers import users, movies
 from schemas.ratings import Rating, RatingPost, RatingResponse, RatingUpdate
 
 router = APIRouter()
-management = DatabaseManagement(table_name='Ratings',
-                                class_name_id='rating_id')
+management = database_management['ratings']
 
 
 def rating_sanity_check(rating_data: dict, db: Reference):
+    users = database_management['users']
+    movies = database_management['movies']
+
     # Verify if the user_id and movie_id exist in the corresponding collections
     user_id = rating_data['user_id']
     movie_id = rating_data['movie_id']
 
-    if not users.management.get_by_id(id=user_id, db=db):
+    if not users.get_by_id(id=user_id, db=db):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found.")
 
-    if not movies.management.get_by_id(id=movie_id, db=db):
+    if not movies.get_by_id(id=movie_id, db=db):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Movie not found.")
 
     min_rating = MIN_RATING

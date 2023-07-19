@@ -3,7 +3,7 @@ from routers import auth
 from utils.hashing import Hashing
 from firebase_admin.db import Reference
 from database.database import get_database
-from database.management import DatabaseManagement
+from database.management_factory import database_management
 from fastapi import APIRouter, status, Depends, HTTPException
 from schemas.users import User, UserPost, UserUpdate, UserDelete, UserResponse
 
@@ -11,8 +11,7 @@ router = APIRouter()
 
 hashing = Hashing()
 
-management = DatabaseManagement(table_name='Users',
-                                class_name_id='user_id')
+management = database_management['users']
 
 
 def user_sanity_check(user_data: dict, db: Reference):

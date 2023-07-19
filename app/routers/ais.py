@@ -3,7 +3,7 @@ from typing import List
 from utils.hashing import Hashing
 from firebase_admin.db import Reference
 from database.database import get_database
-from database.management import DatabaseManagement
+from database.management_factory import database_management
 from fastapi import APIRouter, status, Depends, HTTPException
 from schemas.ais import Ai, AiPost, AiUpdate, AiDelete, AiResponse
 
@@ -11,8 +11,7 @@ router = APIRouter()
 
 hashing = Hashing()
 
-management = DatabaseManagement(table_name='Ais',
-                                class_name_id='ai_id')
+management = database_management['ais']
 
 
 @router.get('/ais/{ai_id}', response_model=AiResponse, status_code=status.HTTP_200_OK)

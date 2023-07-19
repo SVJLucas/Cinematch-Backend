@@ -2,7 +2,7 @@ from typing import List
 from utils.hashing import Hashing
 from firebase_admin.db import Reference
 from database.database import get_database
-from database.management import DatabaseManagement
+from database.management_factory import database_management
 
 from fastapi import APIRouter, status, Depends, HTTPException
 from schemas.admins import Admin, AdminPost, AdminUpdate, AdminDelete, AdminResponse
@@ -11,8 +11,7 @@ router = APIRouter()
 
 hashing = Hashing()
 
-management = DatabaseManagement(table_name='Admins',
-                                class_name_id='admin_id')
+management = database_management['admins']
 
 
 @router.get('/admins/{admin_id}', response_model=AdminResponse, status_code=status.HTTP_200_OK)
