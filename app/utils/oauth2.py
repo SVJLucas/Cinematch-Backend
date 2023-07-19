@@ -82,7 +82,9 @@ class TokenManagement:
             raise credentials_exception
 
     def get_token_data(self, token: str, kind: str):
+
         """
+
         Function to get the data from a token.
 
         Args:
@@ -94,9 +96,10 @@ class TokenManagement:
 
         Raises:
             HTTPException: If the token is invalid.
+
         """
         # Creating an exception for invalid credentials.
-        credentials_exception = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+        credentials_exception = HTTPException(status_code=status.HTTP_403_FORBIDDEN,
                                               detail=f'Could not validate credentials',
                                               headers={'WWW-Authenticate': 'Bearer'}
                                               )

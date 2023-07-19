@@ -27,9 +27,26 @@ login_users_url = '/login/users'
 user_authenticator = TokenManagement(os.getenv('SECRET_KEY_USERS'))
 oauth2_user_schema = OAuth2PasswordBearer(tokenUrl=login_users_url)
 
+# Defining URL for admin login. Then, creating an instance of
+# the TokenManagement class with secret key of admin. After,
+# Defining the schema for OAuth2 password bearer with login admins URL.
+
+login_admins_url = '/login/admins'
+admin_authenticator = TokenManagement(os.getenv('SECRET_KEY_ADMIN'))
+oauth2_admin_schema = OAuth2PasswordBearer(tokenUrl=login_admins_url)
+
+# Defining URL for AI login. Then, creating an instance of
+# the TokenManagement class with secret key of AI. After,
+# Defining the schema for OAuth2 password bearer with login AI URL.
+
+login_ais_url = '/login/ais'
+ai_authenticator = TokenManagement(os.getenv('SECRET_KEY_AI'))
+oauth2_ais_schema = OAuth2PasswordBearer(tokenUrl=login_ais_url)
+
 
 def get_current_user(token: str = Depends(oauth2_user_schema)):
     """
+
     Function to get the current user based on the provided OAuth2 token.
 
     Args:
@@ -37,13 +54,46 @@ def get_current_user(token: str = Depends(oauth2_user_schema)):
 
     Returns:
         The data of the current user.
+
     """
     return user_authenticator.get_token_data(token, 'user')
+
+
+def get_current_admin(token: str = Depends(oauth2_admin_schema)):
+    """
+
+    Function to get the current admin based on the provided OAuth2 token.
+
+    Args:
+        token (str, optional): OAuth2 token. Default is the dependency of OAuth2PasswordBearer instance.
+
+    Returns:
+        The data of the current admin.
+
+    """
+    return admin_authenticator.get_token_data(token, 'admin')
+
+
+def get_current_ai(token: str = Depends(oauth2_ais_schema)):
+
+    """
+
+    Function to get the current AI based on the provided OAuth2 token.
+
+    Args:
+        token (str, optional): OAuth2 token. Default is the dependency of OAuth2PasswordBearer instance.
+
+    Returns:
+        The data of the current AI.
+
+    """
+    return ai_authenticator.get_token_data(token, 'ai')
 
 
 @router.post(login_users_url, status_code=status.HTTP_200_OK, response_model=Token)
 async def authenticate_user(credentials: OAuth2PasswordRequestForm = Depends(), db: Reference = Depends(get_database)):
     """
+
     Function to authenticate the user based on the provided credentials.
 
     Args:
@@ -82,4 +132,98 @@ async def authenticate_user(credentials: OAuth2PasswordRequestForm = Depends(), 
     token = Token(**token)
 
     # If no exceptions were raised, the user's credentials are valid and the user is authenticated.
+    return token
+
+
+@router.post(login_admins_url, status_code=status.HTTP_200_OK, response_model=Token)
+async def authenticate_admin(credentials: OAuth2PasswordRequestForm = Depends(), db: Reference = Depends(get_database)):
+    """
+
+    Function to authenticate the admin based on the provided credentials.
+
+    Args:
+        credentials (OAuth2PasswordRequestForm, optional): The provided admin credentials. Default is the dependency of OAuth2PasswordRequestForm instance.
+        db (Reference, optional): Reference to the database. Default is the dependency of the get_database function.
+
+    Raises:
+        HTTPException: If the admin's credentials are not found in the database or the provided password does not match the stored hashed password.
+
+    Returns:
+        Token: The token of the authenticated admin.
+
+    """
+
+    # get_by_field returns a list, so get the first item if it exists or None otherwise.
+    admin_data_in_db = next(iter(admins.management.get_by_field(field='name',
+                                                                value=credentials.username,
+                                                                db=db)), None)
+
+    # Raise an exception if the admin's credentials are not found in the database.
+    if not admin_data_in_db:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid Credentials")
+
+    provided_password = credentials.password
+    stored_hashed_password = admin_data_in_db['password']
+
+    # Check if the provided password matches the hashed password in the database.
+    if not admins.hashing.verify_password(provided_password, stored_hashed_password):
+        # Raise an exception if the provided password does not match the stored hashed password.
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid Credentials")
+
+    # Getting admin_id
+    admin_id = admin_data_in_db['admin_id']
+
+    # Creating Access JWT Token for the admin.
+    token = admin_authenticator.create_access_token(data={'id': admin_id},
+                                                    kind='admin')
+    token = Token(**token)
+
+    # If no exceptions were raised, the admin's credentials are valid and the admin is authenticated.
+    return token
+
+
+@router.post(login_ais_url, status_code=status.HTTP_200_OK, response_model=Token)
+async def authenticate_ai(credentials: OAuth2PasswordRequestForm = Depends(), db: Reference = Depends(get_database)):
+    """
+
+    Function to authenticate the AI based on the provided credentials.
+
+    Args:
+        credentials (OAuth2PasswordRequestForm, optional): The provided AI credentials. Default is the dependency of OAuth2PasswordRequestForm instance.
+        db (Reference, optional): Reference to the database. Default is the dependency of the get_database function.
+
+    Raises:
+        HTTPException: If the IA's credentials are not found in the database or the provided password does not match the stored hashed password.
+
+    Returns:
+        Token: The token of the authenticated IA.
+
+    """
+
+    # get_by_field returns a list, so get the first item if it exists or None otherwise.
+    ai_data_in_db = next(iter(ais.management.get_by_field(field='name',
+                                                          value=credentials.username,
+                                                          db=db)), None)
+
+    # Raise an exception if the AI's credentials are not found in the database.
+    if not ai_data_in_db:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid Credentials")
+
+    provided_password = credentials.password
+    stored_hashed_password = ai_data_in_db['password']
+
+    # Check if the provided password matches the hashed password in the database.
+    if not ais.hashing.verify_password(provided_password, stored_hashed_password):
+        # Raise an exception if the provided password does not match the stored hashed password.
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid Credentials")
+
+    # Getting ai_id
+    ai_id = ai_data_in_db['ai_id']
+
+    # Creating Access JWT Token for the AI.
+    token = ai_authenticator.create_access_token(data={'id': ai_id},
+                                                 kind='ai')
+    token = Token(**token)
+
+    # If no exceptions were raised, the AI's credentials are valid and the AI is authenticated.
     return token
