@@ -1,3 +1,4 @@
+from routers import auth
 from typing import List
 from firebase_admin.db import Reference
 from database.database import get_database
@@ -75,13 +76,15 @@ async def get_movies_genres(db: Reference = Depends(get_database)):
 
 
 @router.post('/moviesgenres', status_code=status.HTTP_201_CREATED, response_model=MovieGenreResponse)
-async def post_movie_genre(movie_genre: MovieGenrePost, db: Reference = Depends(get_database)):
+async def post_movie_genre(movie_genre: MovieGenrePost, db: Reference = Depends(get_database),
+                           current_admin_id: str = Depends(auth.get_current_admin)) -> MovieGenreResponse:
     """
     Create a new movie_genre in the database.
 
     Parameters:
         movie_genre (MovieGenrePost): The movie_genre data to be saved, parsed from the request body.
         db (Reference): A reference to the Firebase database, injected by FastAPI's dependency injection.
+        current_admin_id (str): The ID of the admin to authenticate.
 
     Returns:
         movie_genre (MovieGenrePost): The created movie_genre data, retrieved from the database.
@@ -102,7 +105,8 @@ async def post_movie_genre(movie_genre: MovieGenrePost, db: Reference = Depends(
 
 
 @router.delete('/moviesgenres/{movie_genre_id}', response_model=MovieGenreResponse, status_code=status.HTTP_200_OK)
-async def delete_movie_genre(movie_genre_id: str, db: Reference = Depends(get_database)) -> MovieGenreResponse:
+async def delete_movie_genre(movie_genre_id: str, db: Reference = Depends(get_database),
+                             current_admin_id: str = Depends(auth.get_current_admin)) -> MovieGenreResponse:
     """
 
     Deletes the movie_genre from database given it's ID
@@ -110,6 +114,7 @@ async def delete_movie_genre(movie_genre_id: str, db: Reference = Depends(get_da
     Parameters:
         movie_genre_id (str): The ID of the movie_genre to retrieve.
         db (Reference): A reference to the Firebase database, injected by FastAPI's dependency injection.
+        current_admin_id (str): The ID of the admin to authenticate.
 
     Returns:
         movie_genre (MovieGenreResponse): The movie_genre data, deleted from the database and modeled as a MovieGenreResponse object.
@@ -126,8 +131,8 @@ async def delete_movie_genre(movie_genre_id: str, db: Reference = Depends(get_da
 
 
 @router.put('/moviesgenres/{movie_genre_id}', status_code=status.HTTP_200_OK, response_model=MovieGenreResponse)
-async def put_movie_genre(movie_genre_id: str, movie_genre: MovieGenreUpdate,
-                          db: Reference = Depends(get_database)) -> MovieGenreResponse:
+async def put_movie_genre(movie_genre_id: str, movie_genre: MovieGenreUpdate, db: Reference = Depends(get_database),
+                          current_admin_id: str = Depends(auth.get_current_admin)) -> MovieGenreResponse:
     """
     Updates a movie_genre in the database.
 
@@ -135,6 +140,7 @@ async def put_movie_genre(movie_genre_id: str, movie_genre: MovieGenreUpdate,
         movie_genre_id (str): The ID of the movie_genre to retrieve.
         movie_genre (MovieGenreUpdate): The movie_genre data to be updated, parsed from the request body.
         db (Reference): A reference to the Firebase database, injected by FastAPI's dependency injection.
+        current_admin_id (str): The ID of the admin to authenticate.
 
     Returns:
         movie_genre (MovieGenreResponse): The updated movie_genre data, retrieved from the database.

@@ -138,7 +138,8 @@ async def get_movies_by_genre(genre_id: str, db: Reference = Depends(get_databas
 
 
 @router.post('/movies', status_code=status.HTTP_201_CREATED, response_model=MovieResponse)
-async def post_movie(movie: MoviePost, db: Reference = Depends(get_database), current_admin_id: str = Depends(auth.get_current_admin)):
+async def post_movie(movie: MoviePost, db: Reference = Depends(get_database),
+                     current_admin_id: str = Depends(auth.get_current_admin)) -> MovieResponse:
 
     """
     Create a new movie in the database.
@@ -146,6 +147,7 @@ async def post_movie(movie: MoviePost, db: Reference = Depends(get_database), cu
     Parameters:
         movie (MoviePost): The movie data to be saved, parsed from the request body.
         db (Reference): A reference to the Firebase database, injected by FastAPI's dependency injection.
+        current_admin_id (str): The ID of the admin to authenticate.
 
     Returns:
         movie (MoviePost): The created movie data, retrieved from the database.
@@ -167,7 +169,8 @@ async def post_movie(movie: MoviePost, db: Reference = Depends(get_database), cu
 
 
 @router.delete('/movies/{movie_id}', response_model=MovieResponse, status_code=status.HTTP_200_OK)
-async def delete_movie(movie_id: str, db: Reference = Depends(get_database),current_admin_id: str = Depends(auth.get_current_admin)) -> MovieResponse:
+async def delete_movie(movie_id: str, db: Reference = Depends(get_database),
+                       current_admin_id: str = Depends(auth.get_current_admin)) -> MovieResponse:
 
     """
 
@@ -176,6 +179,7 @@ async def delete_movie(movie_id: str, db: Reference = Depends(get_database),curr
     Parameters:
         movie_id (str): The ID of the movie to retrieve.
         db (Reference): A reference to the Firebase database, injected by FastAPI's dependency injection.
+        current_admin_id (str): The ID of the admin to authenticate.
 
     Returns:
         movie (MovieResponse): The movie data, deleted from the database and modeled as a MovieResponse object.
@@ -193,7 +197,8 @@ async def delete_movie(movie_id: str, db: Reference = Depends(get_database),curr
 
 
 @router.put('/movies/{movie_id}', status_code=status.HTTP_200_OK, response_model=MovieResponse)
-async def put_movie(movie_id:str, movie: MovieUpdate, db: Reference = Depends(get_database),current_admin_id: str = Depends(auth.get_current_admin)) -> MovieResponse:
+async def put_movie(movie_id:str, movie: MovieUpdate, db: Reference = Depends(get_database),
+                    current_admin_id: str = Depends(auth.get_current_admin)) -> MovieResponse:
 
     """
 
@@ -203,6 +208,7 @@ async def put_movie(movie_id:str, movie: MovieUpdate, db: Reference = Depends(ge
         movie_id (str): The ID of the movie to retrieve.
         movie (MovieUpdate): The movie data to be updated, parsed from the request body.
         db (Reference): A reference to the Firebase database, injected by FastAPI's dependency injection.
+        current_admin_id (str): The ID of the admin to authenticate.
 
     Returns:
         movie (MovieResponse): The updated movie data, retrieved from the database.

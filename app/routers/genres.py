@@ -71,6 +71,7 @@ async def post_genre(genre: GenrePost, db: Reference = Depends(get_database),
     Parameters:
         genre (GenrePost): The genre data to be saved, parsed from the request body.
         db (Reference): A reference to the Firebase database, injected by FastAPI's dependency injection.
+        current_admin_id (str): The ID of the admin to authenticate.
 
     Returns:
         genre (GenrePost): The created genre data, retrieved from the database.
@@ -104,6 +105,7 @@ async def delete_genre(genre_id: str, db: Reference = Depends(get_database),
     Parameters:
         genre_id (str): The ID of the genre to retrieve.
         db (Reference): A reference to the Firebase database, injected by FastAPI's dependency injection.
+        current_admin_id (str): The ID of the admin to authenticate.
 
     Returns:
         genre (GenreResponse): The genre data, deleted from the database and modeled as a GenreResponse object.
@@ -129,6 +131,7 @@ async def put_genre(genre_id: str, genre: GenreUpdate, db: Reference = Depends(g
         genre_id (str): The ID of the genre to retrieve.
         genre (GenreUpdate): The genre data to be updated, parsed from the request body.
         db (Reference): A reference to the Firebase database, injected by FastAPI's dependency injection.
+        current_admin_id (str): The ID of the admin to authenticate.
 
     Returns:
         genre (GenreResponse): The updated genre data, retrieved from the database.

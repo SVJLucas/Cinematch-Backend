@@ -23,6 +23,7 @@ async def get_ai(ai_id: str, db: Reference = Depends(get_database),
     Parameters:
         ai_id (str): The ID of the ai to retrieve.
         db (Reference): A reference to the Firebase database, injected by FastAPI's dependency injection.
+        current_admin_id (str): The ID of the admin to retrieve.
 
     Returns:
         ai (AiResponse): The ai data, retrieved from the database and modeled as a AiResponse object.
@@ -44,6 +45,7 @@ async def get_ais(db: Reference = Depends(get_database),
 
     Parameters:
         db (Reference): A reference to the Firebase database, injected by FastAPI's dependency injection.
+        current_admin_id (str): The ID of the admin to retrieve.
 
     Returns:
         ais (List[AiResponse]): A list of ai data, retrieved from the database.
@@ -68,6 +70,7 @@ async def post_ai(ai: AiPost, db: Reference = Depends(get_database),
     Parameters:
         ai (AiPost): The ai data to be saved, parsed from the request body.
         db (Reference): A reference to the Firebase database, injected by FastAPI's dependency injection.
+        current_admin_id (str): The ID of the admin to retrieve.
 
     Returns:
         ai (AiResponse): The created ai data, retrieved from the database.
@@ -87,13 +90,15 @@ async def post_ai(ai: AiPost, db: Reference = Depends(get_database),
 
 
 @router.delete('/ais/{ai_id}', response_model=AiResponse, status_code=status.HTTP_200_OK)
-async def delete_ai(ai_id: str, db: Reference = Depends(get_database),current_admin_id: str = Depends(auth.get_current_admin)) -> AiResponse:
+async def delete_ai(ai_id: str, db: Reference = Depends(get_database),
+                    current_admin_id: str = Depends(auth.get_current_admin)) -> AiResponse:
     """
     Deletes the ai from the database given their ID.
 
     Parameters:
         ai_id (str): The ID of the ai to retrieve.
         db (Reference): A reference to the Firebase database, injected by FastAPI's dependency injection.
+        current_admin_id (str): The ID of the admin to retrieve.
 
     Returns:
         ai (AiResponse): The ai data, deleted from the database and modeled as a AiResponse object.
@@ -117,6 +122,7 @@ async def put_ai(ai_id: str, ai: AiUpdate, db: Reference = Depends(get_database)
         ai_id (str): The ID of the ai to retrieve.
         ai (AiUpdate): The ai data to be updated, parsed from the request body.
         db (Reference): A reference to the Firebase database, injected by FastAPI's dependency injection.
+        current_admin_id (str): The ID of the admin to retrieve.
 
     Returns:
         ai (AiResponse): The updated ai data, retrieved from the database.

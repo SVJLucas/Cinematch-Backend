@@ -86,7 +86,7 @@ async def post_user(user: UserPost, db: Reference = Depends(get_database)):
     # Perform sanity checks for the user data
     user_sanity_check(user_data, db)
 
-    # Hashing password before it enter the database
+    # Hashing password before it enters the database
     user_data['password'] = hashing.hash_password(user_data['password'])
 
     # Get the data from the manager
@@ -142,6 +142,9 @@ async def put_user(user: UserUpdate, db: Reference = Depends(get_database),
 
     # Perform sanity checks for the user data
     user_sanity_check(user_data, db)
+
+    # Hashing password before it enters the database
+    user_data['password'] = hashing.hash_password(user_data['password'])
 
     # Update the user data in the manager and return the updated data
     updated_user_data = management.update(id=current_user_id, obj_data=user_data, db=db)
