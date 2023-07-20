@@ -11,6 +11,7 @@ from schemas.movies import Movie, MoviePost, MovieUpdate, MovieDelete, MovieResp
 
 router = APIRouter()
 management = database_management['movies']
+movies_genres = database_management['movies_genres']
 
 
 def movie_sanity_check(movie: dict):
@@ -105,6 +106,33 @@ async def get_movies(db: Reference = Depends(get_database)):
     # We're using a generator expression here instead of a list comprehension for better performance
     # A generator expression doesn't construct the whole list in memory, it generates each item on-the-fly
     movies = list(MovieResponse(**movie) for movie in movies)
+
+    return movies
+
+
+@router.get('/movies/by_genre/{genre_id}', response_model=List[MovieResponse], status_code=status.HTTP_200_OK)
+async def get_movies_by_genre(genre_id: str, db: Reference = Depends(get_database)):
+    """
+
+    Retrieve all movies from the database for a specific genre.
+
+    Parameters:
+        genre_id (str): The id of the requested genre
+        db (Reference): A reference to the Firebase database, injected by FastAPI's dependency injection.
+
+    Returns:
+        movies (List[MovieResponse]): A list of movie data, retrieved from the database.
+
+    """
+    # Get the data from the manager
+    movies_genres_list = movies_genres.get_by_field(field='genre_id', value=genre_id, db=db)
+
+
+    # Convert each dictionary in movies_data to a MovieResponse object
+    # We're using a generator expression here instead of a list comprehension for better performance
+    # A generator expression doesn't construct the whole list in memory, it generates each item on-the-fly
+    movies = list(MovieResponse(**(management.get_by_id(movie_genre['movie_id'], db=db)))
+                  for movie_genre in movies_genres_list)
 
     return movies
 
