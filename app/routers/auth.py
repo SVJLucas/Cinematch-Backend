@@ -2,13 +2,18 @@ import os
 from dotenv import load_dotenv
 from schemas.tokens import Token
 from utils.hashing import Hashing
-from routers import users, ais, admins
 from firebase_admin.db import Reference
 from utils.oauth2 import TokenManagement
 from database.database import get_database
+from database.management_factory import database_management
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import APIRouter, status, Depends, HTTPException
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
+
+# Loading databases
+users = database_management['users']
+ais = database_management['ais']
+admins = database_management['admins']
 
 # Creating an instance of the FastAPI router.
 router = APIRouter()
@@ -32,7 +37,7 @@ oauth2_user_schema = OAuth2PasswordBearer(tokenUrl=login_users_url)
 # Defining the schema for OAuth2 password bearer with login admins URL.
 
 login_admins_url = '/login/admins'
-admin_authenticator = TokenManagement(os.getenv('SECRET_KEY_ADMIN'))
+admin_authenticator = TokenManagement(os.getenv('SECRET_KEY_ADMINS'))
 oauth2_admin_schema = OAuth2PasswordBearer(tokenUrl=login_admins_url)
 
 # Defining URL for AI login. Then, creating an instance of
@@ -40,7 +45,7 @@ oauth2_admin_schema = OAuth2PasswordBearer(tokenUrl=login_admins_url)
 # Defining the schema for OAuth2 password bearer with login AI URL.
 
 login_ais_url = '/login/ais'
-ai_authenticator = TokenManagement(os.getenv('SECRET_KEY_AI'))
+ai_authenticator = TokenManagement(os.getenv('SECRET_KEY_AIS'))
 oauth2_ais_schema = OAuth2PasswordBearer(tokenUrl=login_ais_url)
 
 
@@ -107,7 +112,7 @@ async def authenticate_user(credentials: OAuth2PasswordRequestForm = Depends(), 
         Token: The token of the authenticated user.
     """
     # get_by_field returns a list, so get the first item if it exists or None otherwise.
-    user_data_in_db = next(iter(users.management.get_by_field(field='email',
+    user_data_in_db = next(iter(users.get_by_field(field='email',
                                                               value=credentials.username,
                                                               db=db)), None)
 
@@ -119,7 +124,7 @@ async def authenticate_user(credentials: OAuth2PasswordRequestForm = Depends(), 
     stored_hashed_password = user_data_in_db['password']
 
     # Check if the provided password matches the hashed password in the database.
-    if not users.hashing.verify_password(provided_password, stored_hashed_password):
+    if not hashing.verify_password(provided_password, stored_hashed_password):
         # Raise an exception if the provided password does not match the stored hashed password.
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid Credentials")
 
@@ -154,7 +159,7 @@ async def authenticate_admin(credentials: OAuth2PasswordRequestForm = Depends(),
     """
 
     # get_by_field returns a list, so get the first item if it exists or None otherwise.
-    admin_data_in_db = next(iter(admins.management.get_by_field(field='name',
+    admin_data_in_db = next(iter(admins.get_by_field(field='name',
                                                                 value=credentials.username,
                                                                 db=db)), None)
 
@@ -166,7 +171,7 @@ async def authenticate_admin(credentials: OAuth2PasswordRequestForm = Depends(),
     stored_hashed_password = admin_data_in_db['password']
 
     # Check if the provided password matches the hashed password in the database.
-    if not admins.hashing.verify_password(provided_password, stored_hashed_password):
+    if not hashing.verify_password(provided_password, stored_hashed_password):
         # Raise an exception if the provided password does not match the stored hashed password.
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid Credentials")
 
@@ -201,7 +206,7 @@ async def authenticate_ai(credentials: OAuth2PasswordRequestForm = Depends(), db
     """
 
     # get_by_field returns a list, so get the first item if it exists or None otherwise.
-    ai_data_in_db = next(iter(ais.management.get_by_field(field='name',
+    ai_data_in_db = next(iter(ais.get_by_field(field='name',
                                                           value=credentials.username,
                                                           db=db)), None)
 
@@ -213,7 +218,7 @@ async def authenticate_ai(credentials: OAuth2PasswordRequestForm = Depends(), db
     stored_hashed_password = ai_data_in_db['password']
 
     # Check if the provided password matches the hashed password in the database.
-    if not ais.hashing.verify_password(provided_password, stored_hashed_password):
+    if not hashing.verify_password(provided_password, stored_hashed_password):
         # Raise an exception if the provided password does not match the stored hashed password.
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid Credentials")
 

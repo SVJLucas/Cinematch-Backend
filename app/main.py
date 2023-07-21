@@ -15,10 +15,6 @@ connect_to_database()
 # Include routers, assigning tags to categorize the routes in the API docs
 # The user-related routes
 app.include_router(users.router,tags=['Users'])
-# The admin-related routes
-app.include_router(admins.router,tags=['Admins'])
-# The ai-related routes
-app.include_router(ais.router,tags=['Ais'])
 # The genre-related routes
 app.include_router(genres.router,tags=['Genres'])
 # The movie-related routes
@@ -31,3 +27,11 @@ app.include_router(ratings.router,tags=['Ratings'])
 app.include_router(recommendations.router,tags=['Recommendations'])
 # The routes related to login of users, admins and ais
 app.include_router(auth.router,tags=['Login'])
+
+#DEBUG
+
+# The admin-related routes
+# app.include_router(admins.router,tags=['Admins'])
+
+# The ai-related routes
+# app.include_router(ais.router,tags=['Ais'])

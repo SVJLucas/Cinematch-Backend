@@ -1,8 +1,9 @@
 from typing import List
+from routers import auth
 from datetime import datetime
 from firebase_admin.db import Reference
 from database.database import get_database
-from database.management import DatabaseManagement
+from database.management_factory import database_management
 from firebase_admin.exceptions import FirebaseError
 from fastapi import APIRouter, status, Depends, HTTPException
 from schemas.genres import Genre, GenrePost, GenreUpdate, GenreDelete, GenreResponse
@@ -10,8 +11,7 @@ from schemas.genres import Genre, GenrePost, GenreUpdate, GenreDelete, GenreResp
 # todo: genres sanity check (ex: unique)
 
 router = APIRouter()
-management = DatabaseManagement(table_name='Genres',
-                                class_name_id='genre_id')
+management = database_management['genres']
 
 
 @router.get('/genres/{genre_id}', response_model=GenreResponse, status_code=status.HTTP_200_OK)
@@ -63,13 +63,15 @@ async def get_genres(db: Reference = Depends(get_database)):
 
 
 @router.post('/genres', status_code=status.HTTP_201_CREATED, response_model=GenreResponse)
-async def post_genre(genre: GenrePost, db: Reference = Depends(get_database)):
+async def post_genre(genre: GenrePost, db: Reference = Depends(get_database),
+                     current_admin_id: str = Depends(auth.get_current_admin)):
     """
     Create a new genre in the database.
 
     Parameters:
         genre (GenrePost): The genre data to be saved, parsed from the request body.
         db (Reference): A reference to the Firebase database, injected by FastAPI's dependency injection.
+        current_admin_id (str): The ID of the admin to authenticate.
 
     Returns:
         genre (GenrePost): The created genre data, retrieved from the database.
@@ -94,7 +96,8 @@ async def post_genre(genre: GenrePost, db: Reference = Depends(get_database)):
 
 
 @router.delete('/genres/{genre_id}', response_model=GenreResponse, status_code=status.HTTP_200_OK)
-async def delete_genre(genre_id: str, db: Reference = Depends(get_database)) -> GenreResponse:
+async def delete_genre(genre_id: str, db: Reference = Depends(get_database),
+                       current_admin_id: str = Depends(auth.get_current_admin)) -> GenreResponse:
     """
 
     Deletes the genre from database given it's ID
@@ -102,6 +105,7 @@ async def delete_genre(genre_id: str, db: Reference = Depends(get_database)) -> 
     Parameters:
         genre_id (str): The ID of the genre to retrieve.
         db (Reference): A reference to the Firebase database, injected by FastAPI's dependency injection.
+        current_admin_id (str): The ID of the admin to authenticate.
 
     Returns:
         genre (GenreResponse): The genre data, deleted from the database and modeled as a GenreResponse object.
@@ -118,7 +122,8 @@ async def delete_genre(genre_id: str, db: Reference = Depends(get_database)) -> 
 
 
 @router.put('/genres/{genre_id}', status_code=status.HTTP_200_OK, response_model=GenreResponse)
-async def put_genre(genre_id: str, genre: GenreUpdate, db: Reference = Depends(get_database)) -> GenreResponse:
+async def put_genre(genre_id: str, genre: GenreUpdate, db: Reference = Depends(get_database),
+                    current_admin_id: str = Depends(auth.get_current_admin)) -> GenreResponse:
     """
     Updates a genre in the database.
 
@@ -126,6 +131,7 @@ async def put_genre(genre_id: str, genre: GenreUpdate, db: Reference = Depends(g
         genre_id (str): The ID of the genre to retrieve.
         genre (GenreUpdate): The genre data to be updated, parsed from the request body.
         db (Reference): A reference to the Firebase database, injected by FastAPI's dependency injection.
+        current_admin_id (str): The ID of the admin to authenticate.
 
     Returns:
         genre (GenreResponse): The updated genre data, retrieved from the database.

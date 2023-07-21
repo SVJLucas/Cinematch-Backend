@@ -10,7 +10,7 @@ class Rating(BaseModel):
 
 
 class RatingPost(BaseModel):
-    user_id: str
+    # There's no need to pass the user_id
     movie_id: str
     score: float
 
@@ -23,8 +23,7 @@ class RatingResponse(Rating):
 
 
 class RatingUpdate(BaseModel):
-    user_id: str
-    movie_id: str
+    # There's no need to pass the user_id, neither the movie_id
     score: float
 
 

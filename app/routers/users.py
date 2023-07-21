@@ -3,7 +3,7 @@ from routers import auth
 from utils.hashing import Hashing
 from firebase_admin.db import Reference
 from database.database import get_database
-from database.management import DatabaseManagement
+from database.management_factory import database_management
 from fastapi import APIRouter, status, Depends, HTTPException
 from schemas.users import User, UserPost, UserUpdate, UserDelete, UserResponse
 
@@ -11,8 +11,7 @@ router = APIRouter()
 
 hashing = Hashing()
 
-management = DatabaseManagement(table_name='Users',
-                                class_name_id='user_id')
+management = database_management['users']
 
 
 def user_sanity_check(user_data: dict, db: Reference):
@@ -87,7 +86,7 @@ async def post_user(user: UserPost, db: Reference = Depends(get_database)):
     # Perform sanity checks for the user data
     user_sanity_check(user_data, db)
 
-    # Hashing password before it enter the database
+    # Hashing password before it enters the database
     user_data['password'] = hashing.hash_password(user_data['password'])
 
     # Get the data from the manager
@@ -136,8 +135,6 @@ async def put_user(user: UserUpdate, db: Reference = Depends(get_database),
     # Convert the UserUpdate Pydantic model to a dict
     user_data = user.dict()
 
-    print(current_user_id)
-
     # Check if the user exists by ID
     if not management.get_by_id(id=current_user_id, db=db):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -145,6 +142,9 @@ async def put_user(user: UserUpdate, db: Reference = Depends(get_database),
 
     # Perform sanity checks for the user data
     user_sanity_check(user_data, db)
+
+    # Hashing password before it enters the database
+    user_data['password'] = hashing.hash_password(user_data['password'])
 
     # Update the user data in the manager and return the updated data
     updated_user_data = management.update(id=current_user_id, obj_data=user_data, db=db)
