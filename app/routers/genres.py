@@ -62,6 +62,37 @@ async def get_genres(db: Reference = Depends(get_database)):
     return genres
 
 
+@router.get('/genres/by_movie/{movie_id}', response_model=List[GenreResponse], status_code=status.HTTP_200_OK)
+async def get_genres_by_movie(movie_id: str, db: Reference = Depends(get_database)):
+    """
+
+    Retrieve all movies_genres from the database.
+
+    Parameters:
+        movie_id: ID of the movie corresponding to the desired genres
+        db (Reference): A reference to the Firebase database, injected by FastAPI's dependency injection.
+
+    Returns:
+        movies_genres (List[MovieGenreResponse]): A list of movie_genre data, retrieved from the database.
+
+    """
+    # Get the data from the manager
+    movies_genres = database_management['movies_genres']
+
+    # Get the genre ids for the desired movie
+    filtered_movies_genres = movies_genres.get_by_field(field="movie_id", value=movie_id, db=db)
+    genres_ids = [movie_genre["genre_id"] for movie_genre in filtered_movies_genres]
+
+    # Get the genre data
+    genres = [management.get_by_id(genre_id, db=db) for genre_id in genres_ids]
+
+    # Convert each dictionary in movies_genres_data to a MovieGenreResponse object
+    # We're using a generator expression here instead of a list comprehension for better performance
+    # A generator expression doesn't construct the whole list in memory, it generates each item on-the-fly
+    movies_genres = list(GenreResponse(**genre) for genre in genres)
+
+    return movies_genres
+
 @router.post('/genres', status_code=status.HTTP_201_CREATED, response_model=GenreResponse)
 async def post_genre(genre: GenrePost, db: Reference = Depends(get_database),
                      current_admin_id: str = Depends(auth.get_current_admin)):
