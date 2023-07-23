@@ -21,7 +21,9 @@ Key Features:
 
 This API serves as the backbone of the Cinematch service, enabling movie enthusiasts to discover films they'll love but might not have found on their own.
 
-For a more in-depth understanding of the API, including the details of its endpoints, request/response formats, and step-by-step guides on how to use them, refer to the official documentation [here](https://cinematch-zb4scckqra-od.a.run.app/docs) .
+### Documentation
+
+For a more in-depth understanding of the API, including the details of its endpoints, request/response formats, and step-by-step guides on how to use them, refer to the official documentation **[here](https://cinematch-zb4scckqra-od.a.run.app/docs)** .
 
 ## Database's Design
 ### Concept map
