@@ -11,13 +11,13 @@ The Cinematch API is a Python-based web service designed to serve the backend ne
 
 Key Features:
 
-**Management** : The API provides endpoints for user registration and login, effectively managing user authentication and session handling. It enables users to register and maintain profiles where they can view their activities, update their preferences, and manage personal information.
+ - **Management** : The API provides endpoints for user registration and login, effectively managing user authentication and session handling. It enables users to register and maintain profiles where they can view their activities, update their preferences, and manage personal information.
 
-**Movie Management**: The API also keeps track of a vast catalog of movies, offering detailed information such as title, release year, average rating, image URL, synopsis, and genres. It provides endpoints to fetch individual movie details or lists of movies based on various filters.
+ - **Movie Management**: The API also keeps track of a vast catalog of movies, offering detailed information such as title, release year, average rating, image URL, synopsis, and genres. It provides endpoints to fetch individual movie details or lists of movies based on various filters.
 
-**Ratings and Recommendations**: One of the core features of the API is its ability to record user ratings for movies and generate personalized movie recommendations. It uses a combination of these user ratings and advanced algorithms to offer suggestions tailored to the tastes of individual users.
+ - **Ratings and Recommendations**: One of the core features of the API is its ability to record user ratings for movies and generate personalized movie recommendations. It uses a combination of these user ratings and advanced algorithms to offer suggestions tailored to the tastes of individual users.
 
-**Data Security**: A top priority for the API is ensuring the safety of user data. Passwords are hashed before they are stored, and secure HTTP protocols are used for all data transmission, besides JWT tokens.
+ - **Data Security**: A top priority for the API is ensuring the safety of user data. Passwords are hashed before they are stored, and secure HTTP protocols are used for all data transmission, besides JWT tokens.
 
 This API serves as the backbone of the Cinematch service, enabling movie enthusiasts to discover films they'll love but might not have found on their own.
 
