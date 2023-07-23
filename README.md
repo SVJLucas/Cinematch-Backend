@@ -9,7 +9,7 @@ Welcome to the backend repository for Cinematch, a revolutionary movie recommend
 
 The Cinematch API is a Python-based web service designed to serve the backend needs of the Cinematch movie recommendation platform. The API plays a pivotal role in handling user registration, authentication, and personalization, along with maintaining a comprehensive database of movies, user ratings, and recommendations.
 
-### Architectury and Features
+### Web Service Architecture and Main Features
 ![Architectury](https://drive.google.com/uc?export=view&id=10oy-khllBvdljh5JrR7hRAqywdwPTtqd)
 
 Key Features:
