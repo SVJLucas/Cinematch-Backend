@@ -43,9 +43,15 @@ In this case, we focused in the main aspects:
 
 ![Concept Map of the Database](https://drive.google.com/uc?export=view&id=1kZqGk2CQhsAXFeNpW0xjd5AiFj1aiDhB)
 
+### Entity-Relationship Model
+
+The Entity-Relationship Model provides a blueprint for an efficient database system that captures all necessary data and accurately defines relationships. It allows designers to manage user data, movie details, and ratings effectively.
+
+![Concept Map of the Database](https://drive.google.com/uc?export=view&id=1pzLh18drRCEaANJ_iYQZ3dPsmiT7bq3m)
+
 ### Relational Database
 
-The final structure for the database was this:
+The final database structure ensures that all essential data is accounted for, and relationships between entities are accurately defined, providing an efficient and organized system to manage user information, movie details, and user ratings effectively.
 
 ![Relational Database](https://drive.google.com/uc?export=view&id=1vhNdC_IRh40naBLLAn_003XbpNhdlp0V)
 
