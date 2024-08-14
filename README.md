@@ -32,6 +32,8 @@ Thank you for being a part of this mission. Here's to creating movie magic, one 
 
 ![Concept Map of the Database](https://drive.google.com/uc?export=view&id=1Uw7pXNKox9uNbJWkQijx3-_3HY2BbQfE)
 
+
+
 Welcome to the backend repository for Cinematch, a revolutionary movie recommendation platform! Cinematch is designed to connect users to movies they'll love but might not have discovered on their own.
 
 ## The API
@@ -39,7 +41,10 @@ Welcome to the backend repository for Cinematch, a revolutionary movie recommend
 The Cinematch API is a Python-based web service designed to serve the backend needs of the Cinematch movie recommendation platform. The API plays a pivotal role in handling user registration, authentication, and personalization, along with maintaining a comprehensive database of movies, user ratings, and recommendations.
 
 ### Web Service Architecture and Main Features
-![Architectury](https://drive.google.com/uc?export=view&id=10oy-khllBvdljh5JrR7hRAqywdwPTtqd)
+
+<p align="center">
+  <img width="700" alt="Architectury" src="https://github.com/user-attachments/assets/9c974f5c-0f30-4b94-bccf-78319bf0071d">
+</p> 
 
 Key Features:
 
@@ -70,19 +75,27 @@ In this case, we focused in the main aspects:
 
 * **Ratings**: This table could be a junction table that connects Users and Movies. It could include the User identifier, the Movie identifier, the Score that the user gave to the movie, and the Date/Time of the rating. The Score must be a number between 0 and 5.
 
-![Concept Map of the Database](https://drive.google.com/uc?export=view&id=1kZqGk2CQhsAXFeNpW0xjd5AiFj1aiDhB)
+<p align="center">
+  <img width="700" alt="Database concept map" src="https://github.com/user-attachments/assets/1403c5ad-200d-4e0c-8eed-d0df2a68c808">
+</p> 
+
 
 ### Entity-Relationship Model
 
 The Entity-Relationship Model provides a blueprint for an efficient database system that captures all necessary data and accurately defines relationships. It allows designers to manage user data, movie details, and ratings effectively.
 
-![Concept Map of the Database](https://drive.google.com/uc?export=view&id=1pzLh18drRCEaANJ_iYQZ3dPsmiT7bq3m)
+<p align="center">
+  <img width="700" alt="Entity-Relationship Model" src="https://github.com/user-attachments/assets/1febfb63-8128-4d29-abaa-390a69dde773">
+</p> 
 
 ### Relational Database
 
 The final database structure ensures that all essential data is accounted for, and relationships between entities are accurately defined, providing an efficient and organized system to manage user information, movie details, and user ratings effectively.
 
-![Relational Database](https://drive.google.com/uc?export=view&id=1vhNdC_IRh40naBLLAn_003XbpNhdlp0V)
+
+<p align="center">
+  <img width="700" alt="Relational Database" src="https://github.com/user-attachments/assets/509bb202-7801-4d0b-bec2-08022383e56d">
+</p> 
 
 ## Contact
 
